@@ -41,6 +41,9 @@ from random import randint
 #
 # Подвести итоги жизни за год: сколько было заработано денег, сколько сьедено еды, сколько куплено шуб.
 
+class Man:
+    def eat(self):
+        pass
 
 class House:
 
