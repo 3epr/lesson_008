@@ -42,63 +42,108 @@ from random import randint
 # Подвести итоги жизни за год: сколько было заработано денег, сколько сьедено еды, сколько куплено шуб.
 
 class Man:
+
+    def __init__(self, name):
+        self.fullness = 30
+        self.happy = 100
+        self.name = name
+        self.home = None
+
+    def __str__(self):
+        return '{} - сытость {}, счстье {}'.format(self.name, self.fullness, self.happy)
+
     def eat(self):
-        pass
+        cprint('{} ел '.format(self))
+        self.home.food -= 10
+        self.fullness += 20
 
 class House:
 
     def __init__(self):
-        pass
+        self.food = 50
+        self.money = 100
+        self.dirt = 0
+        self.citizens = []
 
+    def __add__(self, other):
+        if isinstance(other, Man):
+            self.citizens.append(other)
+            other.home = self
+            return self
 
-class Husband:
+    def __str__(self):
+        return "В доме - {} денег, {} еды, загрязнение {}".format(self.money, self.food, self.dirt)
 
-    def __init__(self):
-        pass
+class Husband(Man):
 
     def __str__(self):
         return super().__str__()
 
     def act(self):
-        pass
+        self.fullness -= 10
+        _ = randint(0, 6)
+        if self.fullness < 10:
+            self.eat()
+        elif self.home.money < 50:
+            self.work()
+        elif _ == 0:
+            self.eat()
+        elif _ == 1:
+            self.work()
+        else:
+            self.gaming()
 
-    def eat(self):
-        pass
 
     def work(self):
-        pass
+        cprint('{} работал весь день'.format(self.name))
+        self.home.money += 150
 
     def gaming(self):
-        pass
+        cprint('{} целый день играл'.format(self.name))
+        self.happy += 20
 
 
-class Wife:
-
-    def __init__(self):
-        pass
+class Wife(Man):
 
     def __str__(self):
         return super().__str__()
 
     def act(self):
-        pass
-
-    def eat(self):
-        pass
+        self.fullness -= 10
+        if self.fullness < 10:
+            self.eat()
+        elif self.home.food < 20:
+            self.shopping()
+        elif self.home.dirt > 85:
+            self.clean_house()
+        elif self.home.money >= 350:
+            self.buy_fur_coat()
+        else:
+            self.clean_house()
 
     def shopping(self):
-        pass
+        if self.home.money >= 50:
+            cprint('{} сходила за продуктами'.format(self.name))
+            self.home.money -= 50
+            self.home.food += 50
+        else:
+            cprint('Нет денег...')
 
     def buy_fur_coat(self):
-        pass
+        cprint('{} купила шубу'.format(self.name))
+        self.home.money -= 350
+        self.happy += 60
 
     def clean_house(self):
-        pass
+        cprint('{} убрала дом'.format(self.name))
+        self.home.dirt -= 100
 
 
 home = House()
 serge = Husband(name='Сережа')
 masha = Wife(name='Маша')
+home = home + serge
+home = home + masha
 
 for day in range(365):
     cprint('================== День {} =================='.format(day), color='red')
@@ -135,10 +180,7 @@ for day in range(365):
 # Если кот дерет обои, то грязи становится больше на 5 пунктов
 
 
-class Cat:
-
-    def __init__(self):
-        pass
+class Cat(Man):
 
     def act(self):
         pass
@@ -164,10 +206,7 @@ class Cat:
 # отличия от взрослых - кушает максимум 10 единиц еды,
 # степень счастья  - не меняется, всегда ==100 ;)
 
-class Child:
-
-    def __init__(self):
-        pass
+class Child(Man):
 
     def __str__(self):
         return super().__str__()
